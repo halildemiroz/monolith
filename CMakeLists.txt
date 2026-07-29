@@ -21,6 +21,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL2)
 
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 1.0.1
+    GIT_SHALLOW ON
+    )
+FetchContent_MakeAvailable(glm)
+
+find_package(OpenGL REQUIRED)
+
 add_library(MonolithCore SHARED
     engine/src/App.cpp
     engine/src/input.cpp
@@ -29,7 +39,8 @@ add_library(MonolithCore SHARED
 target_include_directories(MonolithCore PUBLIC engine/include)
 target_include_directories(MonolithCore SYSTEM PUBLIC ${sdl2_SOURCE_DIR}/include)
 
-target_link_libraries(MonolithCore PRIVATE SDL2::SDL2-static SDL2::SDL2main)
+target_link_libraries(MonolithCore PRIVATE SDL2::SDL2-static SDL2::SDL2main OpenGL::GL)
+target_link_libraries(MonolithCore PUBLIC glm::glm)
 
 add_executable(MonolithSandbox 
     sandbox/src/main.cpp 

@@ -1,7 +1,9 @@
+#include "SDL_video.h"
 #include <App.h>
 #include <SDL.h>
 #include <input.h>
 #include <iostream>
+#include <GL.h>
 
 namespace Monolith{
 	
@@ -11,24 +13,31 @@ namespace Monolith{
 			m_isRunning = false;
 			return;
 		}
+		
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 		m_window = SDL_CreateWindow("Monolith Engine", 
 				SDL_WINDOWPOS_CENTERED, 
 				SDL_WINDOWPOS_CENTERED, 
-				1280, 720, SDL_WINDOW_SHOWN);
+				1280, 720, SDL_WINDOW_OPENGL);
 		if(!m_window){
 			std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
 			m_isRunning = false;
 			return;
 		}
-
-		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
-		if(!m_renderer){
-			std::cerr << "Failed to create renderer: " << SDL_GetError() << std::endl;
+		
+		SDL_GLContext m_glContext;
+		m_glContext = SDL_GL_CreateContext(m_window);
+		if(!m_glContext){
+			std::cerr << "Failed to create GL context: " << SDL_GetError() << std::endl;
+			m_isRunning = false;
 			return;
 		}
-	
-		SDL_SetRenderDrawColor(m_renderer, 255,255,255,255);
+
+		SDL_GL_SetSwapInterval(1);
 
 		m_isRunning = true;
 	}
@@ -57,13 +66,13 @@ namespace Monolith{
 
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;
+			
+			glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-			SDL_RenderClear(m_renderer);
-			SDL_RenderPresent(m_renderer);
+			SDL_GL_SwapWindow(m_window);
 
-			SDL_Delay(16);
 		}
 	}
-
 
 }
