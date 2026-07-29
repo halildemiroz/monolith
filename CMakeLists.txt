@@ -34,6 +34,7 @@ find_package(OpenGL REQUIRED)
 add_library(MonolithCore SHARED
     engine/src/App.cpp
     engine/src/input.cpp
+    engine/src/Camera2D.cpp
 )
 
 target_include_directories(MonolithCore PUBLIC engine/include)

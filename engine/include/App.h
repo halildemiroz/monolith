@@ -12,6 +12,7 @@ namespace Monolith{
 
 		private:
 			SDL_Window* m_window;
+			SDL_GLContext m_glContext;
 			bool m_isRunning;
 	};
 }

@@ -29,7 +29,6 @@ namespace Monolith{
 			return;
 		}
 		
-		SDL_GLContext m_glContext;
 		m_glContext = SDL_GL_CreateContext(m_window);
 		if(!m_glContext){
 			std::cerr << "Failed to create GL context: " << SDL_GetError() << std::endl;
@@ -45,6 +44,8 @@ namespace Monolith{
 	App::~App(){
 		if(m_window)
 			SDL_DestroyWindow(m_window);
+		if(m_glContext)
+			SDL_GL_DeleteContext(m_glContext);
 		SDL_Quit();
 	}
 	

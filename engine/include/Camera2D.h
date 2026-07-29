@@ -20,6 +20,6 @@ namespace Monolith{
 			float m_width;
 			float m_height;
 			glm::mat4 m_viewProjection{1.0f};
-	}
+	};
 
 }
