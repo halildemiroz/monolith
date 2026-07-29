@@ -21,8 +21,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL2)
 
-add_library(MonolithCore SHARED 
+add_library(MonolithCore SHARED
     engine/src/App.cpp
+    engine/src/input.cpp
 )
 
 target_include_directories(MonolithCore PUBLIC engine/include)

@@ -1,9 +1,6 @@
-#include "SDL_keycode.h"
-#include "SDL_stdinc.h"
-#include "SDL_timer.h"
 #include <App.h>
 #include <SDL.h>
-#include <SDL_events.h>
+#include <input.h>
 #include <iostream>
 
 namespace Monolith{
@@ -43,7 +40,6 @@ namespace Monolith{
 	}
 	
 	void App::Run(){
-		SDL_Event event;
 		Uint64 lastTime = SDL_GetPerformanceCounter();
 
 		while(m_isRunning){
@@ -51,14 +47,19 @@ namespace Monolith{
 			float deltaTime = (currentTime - lastTime) / (float)SDL_GetPerformanceFrequency();
 			lastTime = currentTime;
 
+			SDL_Event event;
 			while(SDL_PollEvent(&event)){
 				if(event.type == SDL_QUIT)
 					m_isRunning = false;
-				if(event.type == SDL_KEYDOWN){
-					if(event.key.keysym.sym == SDLK_ESCAPE)
-						m_isRunning = false;
-				}
 			}
+
+			Input::Update();
+
+			if(Input::isKeyPressed(Key::Escape))
+				m_isRunning = false;
+
+			SDL_RenderClear(m_renderer);
+			SDL_RenderPresent(m_renderer);
 
 			SDL_Delay(16);
 		}
