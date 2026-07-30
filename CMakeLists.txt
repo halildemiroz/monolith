@@ -36,7 +36,8 @@ find_package(OpenGL REQUIRED)
 
 add_library(MonolithCore SHARED
     engine/src/App.cpp
-    engine/src/input.cpp
+    engine/src/Shader.cpp
+    engine/src/Input.cpp
     engine/src/Camera2D.cpp
     engine/vendor/glad/src/glad.c
 )

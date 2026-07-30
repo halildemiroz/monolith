@@ -1,9 +1,9 @@
-#include "SDL_video.h"
 #include <App.h>
 #include <SDL.h>
-#include <input.h>
+#include <Input.h>
 #include <iostream>
 #include <GL.h>
+#include <Shader.h>
 
 namespace Monolith{
 	
@@ -41,6 +41,13 @@ namespace Monolith{
 			m_isRunning = false;
 			return;
 		}		
+
+		// Shader Test
+		Shader testShader(
+			"#version 410 core\nlayout(location = 0) in vec2 aPos;\nvoid main(){ gl_Position = vec4(aPos, 0.0, 1.0); }",
+			"#version 410 core\nout vec4 FragColor;\nvoid main(){ FragColor = vec4(1.0, 0.0, 0.0, 1.0); }"		
+		);
+		//
 
 		SDL_GL_SetSwapInterval(1);
 
