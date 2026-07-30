@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
-project(Monolith VERSION 1.0 LANGUAGES CXX)
+project(Monolith VERSION 1.0 LANGUAGES CXX C)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -19,6 +21,7 @@ FetchContent_Declare(
     GIT_TAG        release-2.30.5
     GIT_SHALLOW    ON
 )
+set(SDL_PIPEWIRE OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(SDL2)
 
 FetchContent_Declare(
@@ -35,10 +38,12 @@ add_library(MonolithCore SHARED
     engine/src/App.cpp
     engine/src/input.cpp
     engine/src/Camera2D.cpp
+    engine/vendor/glad/src/glad.c
 )
 
 target_include_directories(MonolithCore PUBLIC engine/include)
 target_include_directories(MonolithCore SYSTEM PUBLIC ${sdl2_SOURCE_DIR}/include)
+target_include_directories(MonolithCore PUBLIC engine/vendor/glad/include)
 
 target_link_libraries(MonolithCore PRIVATE SDL2::SDL2-static SDL2::SDL2main OpenGL::GL)
 target_link_libraries(MonolithCore PUBLIC glm::glm)

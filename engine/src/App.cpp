@@ -36,6 +36,12 @@ namespace Monolith{
 			return;
 		}
 
+		if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)){
+			std::cerr << "Failed to initialize GLAD" << std::endl;
+			m_isRunning = false;
+			return;
+		}		
+
 		SDL_GL_SetSwapInterval(1);
 
 		m_isRunning = true;
