@@ -7,6 +7,7 @@
 #include <VAO.h>
 #include <VBO.h>
 #include <memory>
+#include <Renderer.h>
 
 namespace Monolith{
 	
@@ -44,6 +45,8 @@ namespace Monolith{
 			m_isRunning = false;
 			return;
 		}		
+	
+		Renderer::Init();
 
 		float vertices[] = {
 			-0.5f, -0.5f,
@@ -92,13 +95,9 @@ namespace Monolith{
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;
 			
-			glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			Renderer::Clear(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
+			Renderer::Submit(*m_shader, *m_vao, GL_TRIANGLES, 3);
 			
-			m_shader->Bind();
-			m_vao->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 3);
-
 			SDL_GL_SwapWindow(m_window);
 
 		}

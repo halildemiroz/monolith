@@ -38,6 +38,7 @@ add_library(MonolithCore SHARED
     engine/src/App.cpp
     engine/src/Shader.cpp
     engine/src/Input.cpp
+    engine/src/Renderer.cpp
     engine/src/Camera2D.cpp
     engine/src/VAO.cpp
     engine/src/VBO.cpp
