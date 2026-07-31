@@ -15,6 +15,8 @@ namespace Monolith{
 			void PushLayer(std::unique_ptr<Layer> layer);
 			void Run();
 
+			Camera2D& GetCamera() { return m_cam; }
+
 		private:
 			SDL_Window* m_window;
 			SDL_GLContext m_glContext;

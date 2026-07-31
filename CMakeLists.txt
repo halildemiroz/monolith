@@ -32,6 +32,34 @@ FetchContent_Declare(
     )
 FetchContent_MakeAvailable(glm)
 
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG docking
+    GIT_SHALLOW ON
+    )
+FetchContent_MakeAvailable(imgui)
+
+add_library(ImGui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/imgui_demo.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(ImGui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+    ${sdl2_SOURCE_DIR}/include
+    engine/vendor/glad/include
+)
+
+target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_link_libraries(ImGui PUBLIC SDL2::SDL2-static)
+
 find_package(OpenGL REQUIRED)
 
 add_library(MonolithCore SHARED
@@ -50,7 +78,7 @@ target_include_directories(MonolithCore SYSTEM PUBLIC ${sdl2_SOURCE_DIR}/include
 target_include_directories(MonolithCore PUBLIC engine/vendor/glad/include)
 
 target_link_libraries(MonolithCore PRIVATE SDL2::SDL2-static SDL2::SDL2main OpenGL::GL)
-target_link_libraries(MonolithCore PUBLIC glm::glm)
+target_link_libraries(MonolithCore PUBLIC glm::glm ImGui)
 
 add_executable(MonolithSandbox 
     sandbox/src/main.cpp 

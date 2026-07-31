@@ -10,8 +10,11 @@ namespace Monolith{
 			void setPosition(const glm::vec2& position);
 			void setZoom(float zoom);
 			void setViewportSize(float width, float height);
-
+			
 			const glm::mat4& GetViewProjection() const { return m_viewProjection; }
+			const glm::vec2& GetPosition() const { return m_position; }
+			float GetZoom() const { return m_zoom; }
+
 		private:
 			void Recalculate();
 

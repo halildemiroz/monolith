@@ -6,6 +6,10 @@
 #include <Renderer.h>
 #include <Layer.h>
 
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_opengl3.h>
+
 namespace Monolith{
 	
 	App::App() : m_cam(1280.0f, 720.0f){	
@@ -32,6 +36,7 @@ namespace Monolith{
 		
 		m_glContext = SDL_GL_CreateContext(m_window);
 		if(!m_glContext){
+
 			std::cerr << "Failed to create GL context: " << SDL_GetError() << std::endl;
 			m_isRunning = false;
 			return;
@@ -43,9 +48,16 @@ namespace Monolith{
 			return;
 		}		
 	
-		Renderer::Init();
-
+		
 		SDL_GL_SetSwapInterval(1);
+
+		/* IMGUI */
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+		ImGui_ImplSDL2_InitForOpenGL(m_window, m_glContext);
+		ImGui_ImplOpenGL3_Init("#version 410");
+		/* ------------ */
 
 		m_isRunning = true;
 	}
@@ -53,6 +65,11 @@ namespace Monolith{
 	App::~App(){
 		if(m_layer)
 			m_layer->OnDetach();
+
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+		ImGui::DestroyContext();
+
 		if(m_window)
 			SDL_DestroyWindow(m_window);
 		if(m_glContext)
@@ -76,6 +93,7 @@ namespace Monolith{
 
 			SDL_Event event;
 			while(SDL_PollEvent(&event)){
+				ImGui_ImplSDL2_ProcessEvent(&event);
 				if(event.type == SDL_QUIT)
 					m_isRunning = false;
 			}
@@ -88,12 +106,24 @@ namespace Monolith{
 			if(m_layer)
 				m_layer->OnUpdate(deltaTime);
 			
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame();
+			ImGui::NewFrame();
+
+			if(m_layer)
+				m_layer->OnImGuiRender();
+
+			ImGui::Render();
+			
 			Renderer::Clear(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
 			
 			Renderer::BeginScene(m_cam);
 			if(m_layer)
 				m_layer->OnRender();
 			Renderer::EndScene();
+			
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
 			SDL_GL_SwapWindow(m_window);
 

@@ -1,3 +1,4 @@
+#include "Camera2D.h"
 #include <sandboxLayer.h>
 
 #include <Shader.h>
@@ -6,8 +7,9 @@
 #include <Renderer.h>
 #include <glad/glad.h>
 #include <memory>
+#include <imgui.h>
 
-sandboxLayer::sandboxLayer() = default;
+sandboxLayer::sandboxLayer(Monolith::Camera2D& cam) : m_cam(cam){}
 sandboxLayer::~sandboxLayer() = default;
 
 void sandboxLayer::OnAttach(){
@@ -29,5 +31,19 @@ void sandboxLayer::OnAttach(){
 
 void sandboxLayer::OnRender(){
 	Monolith::Renderer::Submit(*m_shader, *m_vao, GL_TRIANGLES, 3);
+}
+
+void sandboxLayer::OnImGuiRender(){
+	ImGui::Begin("Camera");
+
+	glm::vec2 position = m_cam.GetPosition();
+	if(ImGui::DragFloat2("Position", &position.x, 1.0f))
+		m_cam.setPosition(position);
+
+	float zoom = m_cam.GetZoom();
+	if(ImGui::DragFloat("Zoom", &zoom ,0.01f, 0.1f, 10.0f))
+		m_cam.setZoom(zoom);
+
+	ImGui::End();
 }
 
