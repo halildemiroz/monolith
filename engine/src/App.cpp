@@ -4,6 +4,9 @@
 #include <iostream>
 #include <GL.h>
 #include <Shader.h>
+#include <VAO.h>
+#include <VBO.h>
+#include <memory>
 
 namespace Monolith{
 	
@@ -42,12 +45,20 @@ namespace Monolith{
 			return;
 		}		
 
-		// Shader Test
-		Shader testShader(
+		float vertices[] = {
+			-0.5f, -0.5f,
+			0.5f, -0.5f,
+			0.0f, 0.5f
+		};
+
+		m_shader = std::make_unique<Shader>(
 			"#version 410 core\nlayout(location = 0) in vec2 aPos;\nvoid main(){ gl_Position = vec4(aPos, 0.0, 1.0); }",
-			"#version 410 core\nout vec4 FragColor;\nvoid main(){ FragColor = vec4(1.0, 0.0, 0.0, 1.0); }"		
-		);
-		//
+			"#version 410 core\nout vec4 FragColor;\nvoid main(){ FragColor = vec4(1.0, 0.0, 0.0, 1.0); }"
+				);
+
+		m_vbo = std::make_unique<VBO>(vertices, sizeof(vertices));
+		m_vao = std::make_unique<VAO>();
+		m_vao->addVBO(*m_vbo, 0, 2, GL_FLOAT, 2 * sizeof(float), 0);
 
 		SDL_GL_SetSwapInterval(1);
 
@@ -83,6 +94,10 @@ namespace Monolith{
 			
 			glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			
+			m_shader->Bind();
+			m_vao->Bind();
+			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			SDL_GL_SwapWindow(m_window);
 

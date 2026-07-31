@@ -39,6 +39,8 @@ add_library(MonolithCore SHARED
     engine/src/Shader.cpp
     engine/src/Input.cpp
     engine/src/Camera2D.cpp
+    engine/src/VAO.cpp
+    engine/src/VBO.cpp
     engine/vendor/glad/src/glad.c
 )
 
