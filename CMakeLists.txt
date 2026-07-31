@@ -54,7 +54,9 @@ target_link_libraries(MonolithCore PUBLIC glm::glm)
 
 add_executable(MonolithSandbox 
     sandbox/src/main.cpp 
+    sandbox/src/sandboxLayer.cpp
 )
 
+target_include_directories(MonolithSandbox PUBLIC sandbox/include)
 target_link_libraries(MonolithSandbox PRIVATE MonolithCore)
 

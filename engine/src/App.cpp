@@ -3,15 +3,12 @@
 #include <Input.h>
 #include <iostream>
 #include <GL.h>
-#include <Shader.h>
-#include <VAO.h>
-#include <VBO.h>
-#include <memory>
 #include <Renderer.h>
+#include <Layer.h>
 
 namespace Monolith{
 	
-	App::App(){	
+	App::App() : m_cam(1280.0f, 720.0f){	
 		if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
 			std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
 			m_isRunning = false;
@@ -48,32 +45,25 @@ namespace Monolith{
 	
 		Renderer::Init();
 
-		float vertices[] = {
-			-0.5f, -0.5f,
-			0.5f, -0.5f,
-			0.0f, 0.5f
-		};
-
-		m_shader = std::make_unique<Shader>(
-			"#version 410 core\nlayout(location = 0) in vec2 aPos;\nvoid main(){ gl_Position = vec4(aPos, 0.0, 1.0); }",
-			"#version 410 core\nout vec4 FragColor;\nvoid main(){ FragColor = vec4(1.0, 0.0, 0.0, 1.0); }"
-				);
-
-		m_vbo = std::make_unique<VBO>(vertices, sizeof(vertices));
-		m_vao = std::make_unique<VAO>();
-		m_vao->addVBO(*m_vbo, 0, 2, GL_FLOAT, 2 * sizeof(float), 0);
-
 		SDL_GL_SetSwapInterval(1);
 
 		m_isRunning = true;
 	}
 	
 	App::~App(){
+		if(m_layer)
+			m_layer->OnDetach();
 		if(m_window)
 			SDL_DestroyWindow(m_window);
 		if(m_glContext)
 			SDL_GL_DeleteContext(m_glContext);
 		SDL_Quit();
+	}
+
+	void App::PushLayer(std::unique_ptr<Layer>layer){
+		m_layer = std::move(layer);
+		if(m_layer)
+			m_layer->OnAttach();
 	}
 	
 	void App::Run(){
@@ -94,10 +84,17 @@ namespace Monolith{
 
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;
+
+			if(m_layer)
+				m_layer->OnUpdate(deltaTime);
 			
 			Renderer::Clear(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
-			Renderer::Submit(*m_shader, *m_vao, GL_TRIANGLES, 3);
 			
+			Renderer::BeginScene(m_cam);
+			if(m_layer)
+				m_layer->OnRender();
+			Renderer::EndScene();
+
 			SDL_GL_SwapWindow(m_window);
 
 		}
