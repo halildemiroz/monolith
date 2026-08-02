@@ -8,6 +8,8 @@
 #include <glad/glad.h>
 #include <memory>
 #include <imgui.h>
+#include <TextureLib.h>
+#include <Texture.h>
 
 sandboxLayer::sandboxLayer(Monolith::Camera2D& cam) : m_cam(cam){}
 sandboxLayer::~sandboxLayer() = default;
@@ -27,6 +29,9 @@ void sandboxLayer::OnAttach(){
 	m_vao = std::make_unique<Monolith::VAO>();
 
 	m_vao->addVBO(*m_vbo, 0, 2, GL_FLOAT, 2 * sizeof(float), 0);
+
+	m_texture = Monolith::TextureLib::Load("sandbox/assets/a.png");
+
 }
 
 void sandboxLayer::OnRender(){
@@ -43,6 +48,9 @@ void sandboxLayer::OnImGuiRender(){
 	float zoom = m_cam.GetZoom();
 	if(ImGui::DragFloat("Zoom", &zoom ,0.01f, 0.1f, 10.0f))
 		m_cam.setZoom(zoom);
+
+	auto& tex = Monolith::TextureLib::Get(m_texture);
+	ImGui::Text("Texture: %dx%d (id=%u)", tex.GetWidth(), tex.GetHeight(), tex.GetID());
 
 	ImGui::End();
 }

@@ -40,6 +40,14 @@ FetchContent_Declare(
     )
 FetchContent_MakeAvailable(imgui)
 
+FetchContent_declare(
+    stb_image
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+    GIT_SHALLOW ON
+    )
+FetchContent_MakeAvailable(stb_image)
+
 add_library(ImGui STATIC
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_draw.cpp
@@ -70,11 +78,14 @@ add_library(MonolithCore SHARED
     engine/src/Camera2D.cpp
     engine/src/VAO.cpp
     engine/src/VBO.cpp
+    engine/src/Texture.cpp
+    engine/src/TextureLib.cpp
     engine/vendor/glad/src/glad.c
 )
 
 target_include_directories(MonolithCore PUBLIC engine/include)
 target_include_directories(MonolithCore SYSTEM PUBLIC ${sdl2_SOURCE_DIR}/include)
+target_include_directories(MonolithCore PUBLIC ${stb_image_SOURCE_DIR})
 target_include_directories(MonolithCore PUBLIC engine/vendor/glad/include)
 
 target_link_libraries(MonolithCore PRIVATE SDL2::SDL2-static SDL2::SDL2main OpenGL::GL)

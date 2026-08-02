@@ -1,5 +1,6 @@
 #pragma once
-#include "Camera2D.h"
+#include <Camera2D.h>
+#include <TextureHandle.h>
 #include <Layer.h>
 #include <memory>
 
@@ -19,6 +20,7 @@ class sandboxLayer : public Monolith::Layer{
 		void OnRender() override;
 		void OnImGuiRender() override;
 	private:
+		Monolith::TextureHandle m_texture;
 		Monolith::Camera2D& m_cam;
 		std::unique_ptr<Monolith::Shader> m_shader;
 		std::unique_ptr<Monolith::VAO> m_vao;
