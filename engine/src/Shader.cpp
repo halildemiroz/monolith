@@ -1,4 +1,5 @@
 #include <Shader.h>
+#include <string>
 #include <vector>
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
@@ -65,5 +66,13 @@ void Monolith::Shader::setMat4(const std::string& name, const glm::mat4& value){
 
 void Monolith::Shader::setVec4(const std::string& name, const glm::vec4& value){
 	glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(value));
+}
+
+void Monolith::Shader::setInt(const std::string& name, int value){
+	glUniform1i(getUniformLocation(name), value);
+}
+
+void Monolith::Shader::setIntArray(const std::string& name, const int* values, uint32_t count){
+	glUniform1iv(getUniformLocation(name), count, values);
 }
 

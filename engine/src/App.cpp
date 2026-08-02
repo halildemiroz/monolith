@@ -48,6 +48,7 @@ namespace Monolith{
 			return;
 		}		
 	
+		Renderer::Init();
 		
 		SDL_GL_SetSwapInterval(1);
 

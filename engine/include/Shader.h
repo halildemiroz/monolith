@@ -14,6 +14,9 @@ namespace Monolith{
 			void Unbind();
 			void setMat4(const std::string& name, const glm::mat4& value);
 			void setVec4(const std::string& name, const glm::vec4& value);
+			void setInt(const std::string& name, int value);
+			void setIntArray(const std::string& name, const int* values, uint32_t count);
+
 		private:
 			GLuint compileStage(GLenum stage, const std::string& src);
 			GLint getUniformLocation(const std::string& name);
