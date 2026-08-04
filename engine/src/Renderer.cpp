@@ -22,8 +22,8 @@ namespace Monolith{
 			float texIndex;
 		};
 
-		constexpr uint32_t MaxQuads = 10000;
-		constexpr uint32_t MaxVertices = MaxQuads * 6; // no index buffer yet, 2 tris/quad
+		constexpr uint32_t MaxQuads = 90000;
+		constexpr uint32_t MaxVertices = MaxQuads * 6;
 		constexpr uint32_t MaxTextureSlots = 8;
 
 		const char* kSpriteVertexSrc =
@@ -56,6 +56,7 @@ namespace Monolith{
 		std::unique_ptr<VBO> s_vbo;
 		std::unique_ptr<VAO> s_vao;
 		std::unique_ptr<Shader> s_spriteShader;
+		std::unique_ptr<Texture> s_whiteTexture;
 
 		std::vector<SpriteVertex> s_vertexBuffer;
 		std::array<TextureHandle, MaxTextureSlots> s_textureSlots{};
@@ -75,6 +76,7 @@ namespace Monolith{
 		s_vao->addVBO(*s_vbo, 2, 1, GL_FLOAT, sizeof(SpriteVertex), offsetof(SpriteVertex, texIndex));
 
 		s_spriteShader = std::make_unique<Shader>(kSpriteVertexSrc, kSpriteFragmentSrc);
+		s_whiteTexture = std::make_unique<Texture>(1,1,0xffffffffu);
 
 		int samplers[MaxTextureSlots];
 		for(uint32_t i = 0; i < MaxTextureSlots; ++i)
@@ -163,6 +165,8 @@ namespace Monolith{
 
 		s_vbo->setData(s_vertexBuffer.data(), s_vertexBuffer.size() * sizeof(SpriteVertex));
 
+		for(uint32_t i = 0; i < MaxTextureSlots; ++i)
+			s_whiteTexture->Bind(i);
 		for(uint32_t i = 0; i < s_textureSlotCount; ++i)
 			TextureLib::Get(s_textureSlots[i]).Bind(i);
 

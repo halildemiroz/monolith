@@ -5,6 +5,7 @@
 #include <GL.h>
 #include <Renderer.h>
 #include <Layer.h>
+#include <TextureLib.h>
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -49,6 +50,7 @@ namespace Monolith{
 		}		
 	
 		Renderer::Init();
+		TextureLib::Init();
 		
 		SDL_GL_SetSwapInterval(1);
 
@@ -71,8 +73,10 @@ namespace Monolith{
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
 
-		if(m_window)
+		if(m_window){
 			SDL_DestroyWindow(m_window);
+			TextureLib::Shutdown();
+		}
 		if(m_glContext)
 			SDL_GL_DeleteContext(m_glContext);
 		SDL_Quit();
@@ -100,6 +104,7 @@ namespace Monolith{
 			}
 
 			Input::Update();
+			TextureLib::Update(deltaTime);
 
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;

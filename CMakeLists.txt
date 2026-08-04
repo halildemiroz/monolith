@@ -10,6 +10,10 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "" FORCE)
+endif()
+
 include(FetchContent)
 set(SDL2_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "" FORCE)
@@ -78,6 +82,7 @@ add_library(MonolithCore SHARED
     engine/src/Camera2D.cpp
     engine/src/VAO.cpp
     engine/src/VBO.cpp
+    engine/src/Image.cpp
     engine/src/Texture.cpp
     engine/src/TextureLib.cpp
     engine/vendor/glad/src/glad.c

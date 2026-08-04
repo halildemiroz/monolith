@@ -1,4 +1,5 @@
 #include "Camera2D.h"
+#include "TextureHandle.h"
 #include <sandboxLayer.h>
 
 #include <Renderer.h>
@@ -11,10 +12,12 @@ sandboxLayer::~sandboxLayer() = default;
 
 void sandboxLayer::OnAttach(){
 	m_texture = Monolith::TextureLib::Load("sandbox/assets/a.png");
+	Monolith::TextureLib::LoadAsync("sandbox/assets/a.png");
+	Monolith::TextureLib::LoadAsync("sandbox/assets/a.png");
 }
 
 void sandboxLayer::OnRender(){
-	int grid = 100; // 100x100 = 10,000 sprites
+	int grid = 300; // 100x100 = 10,000 sprites
 	float spacing = 20.0f;
 
 	for(int y = 0; y < grid; ++y){
@@ -41,6 +44,18 @@ void sandboxLayer::OnImGuiRender(){
 
 	ImGui::Text("Draw calls: %u", Monolith::Renderer::GetDrawCallCount());
 	ImGui::Text("Frame time: %.3f ms (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+	bool hotReload = Monolith::TextureLib::IsHotReloadEnabled();
+	if(ImGui::Checkbox("Hot Reload", &hotReload))
+		Monolith::TextureLib::SetHotReloadEnabled(hotReload);
+	
+	const auto& stats = Monolith::TextureLib::GetStats();
+	ImGui::Separator();
+	ImGui::Text("Load requests: %u", stats.loadRequests);
+	ImGui::Text("Cache hits:    %u", stats.cacheHits);
+	ImGui::Text("GPU uploads:   %u", stats.gpuUploads);
+	ImGui::Text("Hot reloads:   %u", stats.hotReloads);
+	ImGui::Text("Pending async: %u", stats.pendingAsync);
 
 	ImGui::End();
 }

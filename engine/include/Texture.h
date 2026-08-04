@@ -8,10 +8,13 @@ namespace Monolith{
 	class Texture{
 		public:
 			explicit Texture(const std::string& path);
+			Texture(int width, int height, uint32_t color = 0xffffffff);
 			~Texture();
 
 			Texture(const Texture&) = delete;
 			Texture& operator=(const Texture&) = delete;
+			
+			void SetData(const unsigned char* pixels, int width, int height, int channels);
 
 			void Bind(GLuint slot = 0) const;
 			void Unbind() const;
