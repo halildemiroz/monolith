@@ -1,6 +1,11 @@
 #include "Camera2D.h"
+#include "Components.h"
+#include "Entity.h"
+#include "Systems.h"
 #include "TextureHandle.h"
 #include <sandboxLayer.h>
+
+#include <cmath>
 
 #include <Renderer.h>
 #include <TextureLib.h>
@@ -12,23 +17,58 @@ sandboxLayer::~sandboxLayer() = default;
 
 void sandboxLayer::OnAttach(){
 	m_texture = Monolith::TextureLib::Load("sandbox/assets/a.png");
+	m_playerTexture = Monolith::TextureLib::Load("sandbox/assets/b.png");
 	Monolith::TextureLib::LoadAsync("sandbox/assets/a.png");
 	Monolith::TextureLib::LoadAsync("sandbox/assets/a.png");
-}
 
-void sandboxLayer::OnRender(){
-	int grid = 300; // 100x100 = 10,000 sprites
-	float spacing = 20.0f;
+	const int grid = 100;
+	const float spacing = 20.0f;
 
 	for(int y = 0; y < grid; ++y){
 		for(int x = 0; x < grid; ++x){
-			glm::vec2 pos{
-				(x - grid / 2) * spacing,
-				(y - grid / 2) * spacing
-			};
-			Monolith::Renderer::DrawSprite(m_texture, pos, {16.0f, 16.0f});
+			Monolith::Entity entity = m_registry.Create();
+
+			Monolith::Transform transform;
+			transform.position = { (x - grid / 2) * spacing, (y - grid / 2) * spacing };
+			m_registry.Add<Monolith::Transform>(entity, transform);
+
+			Monolith::Sprite sprite;
+			sprite.texture = m_texture;
+			sprite.size = { 16.0f, 16.0f };
+			m_registry.Add<Monolith::Sprite>(entity, sprite);
+
+			if((x+y) % 2 == 0){
+				Monolith::Velocity velocity;
+				velocity.value = { std::sin(float(x)) * 20.0f, std::cos(float(y)) * 20.0f };
+				m_registry.Add<Monolith::Velocity>(entity, velocity);
+			}
 		}
 	}
+
+	m_player = m_registry.Create();
+
+	Monolith::Transform playerTransform;
+	playerTransform.position = { 0.0f, 0.0f };
+	m_registry.Add<Monolith::Transform>(m_player, playerTransform);
+
+	Monolith::Sprite playerSprite;
+	playerSprite.texture = m_playerTexture;
+	playerSprite.size = { 64.0f, 64.0f };
+	m_registry.Add<Monolith::Sprite>(m_player, playerSprite);
+
+	m_registry.Add<Monolith::Velocity>(m_player);
+	m_registry.Add<Player>(m_player, Player{300.0f});
+}
+
+void sandboxLayer::OnUpdate(float deltaTime){
+	PlayerSystem(m_registry);
+	Monolith::MovementSystem(m_registry, deltaTime);
+	m_cam.setPosition(m_registry.Get<Monolith::Transform>(m_player).position);
+	m_registry.Flush();
+}
+
+void sandboxLayer::OnRender(){
+	Monolith::RenderSystem(m_registry);
 }
 
 void sandboxLayer::OnImGuiRender(){
@@ -56,6 +96,7 @@ void sandboxLayer::OnImGuiRender(){
 	ImGui::Text("GPU uploads:   %u", stats.gpuUploads);
 	ImGui::Text("Hot reloads:   %u", stats.hotReloads);
 	ImGui::Text("Pending async: %u", stats.pendingAsync);
+	ImGui::Text("Entities: %zu", m_registry.AliveCount());
 
 	ImGui::End();
 }

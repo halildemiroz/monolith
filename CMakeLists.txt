@@ -79,6 +79,7 @@ add_library(MonolithCore SHARED
     engine/src/Shader.cpp
     engine/src/Input.cpp
     engine/src/Renderer.cpp
+    engine/src/Systems.cpp
     engine/src/Camera2D.cpp
     engine/src/VAO.cpp
     engine/src/VBO.cpp
@@ -99,6 +100,7 @@ target_link_libraries(MonolithCore PUBLIC glm::glm ImGui)
 add_executable(MonolithSandbox 
     sandbox/src/main.cpp 
     sandbox/src/sandboxLayer.cpp
+    sandbox/src/Player.cpp
 )
 
 target_include_directories(MonolithSandbox PUBLIC sandbox/include)
