@@ -3,6 +3,7 @@
 #include <Image.h>
 #include <TextureLib.h>
 #include <Texture.h>
+#include <Log.h>
 
 #include <cstdint>
 #include <vector>
@@ -167,9 +168,10 @@ namespace Monolith{
 		ImageData image = LoadImage(path);
 		if(image.isValid()){
 			entry.texture->SetData(image.pixels, image.width, image.height, image.channels);
-			FreeImage(image);
 			entry.ready = true;
 			s_stats.gpuUploads++;
+			MONO_INFO("Uploaded texture: ", path, " (", image.width, "x", image.height, ", ", image.channels, " channels)");
+			FreeImage(image);
 		}
 		entry.lastWrite = FileTime(path);
 
@@ -237,8 +239,14 @@ namespace Monolith{
 				entry.texture->SetData(job.image.pixels, job.image.width, job.image.height, job.image.channels);
 				entry.ready = true;
 				s_stats.gpuUploads++;
-				if(job.isReload)
+				if(job.isReload){
 					s_stats.hotReloads++;
+					MONO_INFO("Hot-reloaded texture: ", entry.path);
+				}else{
+					MONO_INFO("Uploaded texture: ", entry.path, " (",
+						job.image.width, "x", job.image.height, ", ",
+						job.image.channels, " channels)");
+				}
 			}
 
 			FreeImage(job.image);

@@ -6,6 +6,7 @@
 #include <Renderer.h>
 #include <Layer.h>
 #include <TextureLib.h>
+#include <Log.h>
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -14,8 +15,12 @@
 namespace Monolith{
 	
 	App::App() : m_cam(1280.0f, 720.0f){	
+
+		Log::Init("monolith.log");
+		MONO_INFO("Monolith starting up!");
+
 		if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
-			std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
+			MONO_ERROR("Failed to initialize SDL: ", SDL_GetError());
 			m_isRunning = false;
 			return;
 		}
@@ -30,21 +35,20 @@ namespace Monolith{
 				SDL_WINDOWPOS_CENTERED, 
 				1280, 720, SDL_WINDOW_OPENGL);
 		if(!m_window){
-			std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
+			MONO_ERROR("Failed to create window: ", SDL_GetError());
 			m_isRunning = false;
 			return;
 		}
 		
 		m_glContext = SDL_GL_CreateContext(m_window);
 		if(!m_glContext){
-
-			std::cerr << "Failed to create GL context: " << SDL_GetError() << std::endl;
+			MONO_ERROR("Failed to create GL context: ", SDL_GetError());
 			m_isRunning = false;
 			return;
 		}
 
 		if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)){
-			std::cerr << "Failed to initialize GLAD" << std::endl;
+			MONO_ERROR("Failed to initialize GLAD");
 			m_isRunning = false;
 			return;
 		}		
@@ -79,6 +83,7 @@ namespace Monolith{
 		}
 		if(m_glContext)
 			SDL_GL_DeleteContext(m_glContext);
+		MONO_INFO("Monolith shutting down");
 		SDL_Quit();
 	}
 
@@ -90,11 +95,15 @@ namespace Monolith{
 	
 	void App::Run(){
 		Uint64 lastTime = SDL_GetPerformanceCounter();
+		constexpr float kMaxFrameTime = 0.25f;
 
 		while(m_isRunning){
 			Uint64 currentTime = SDL_GetPerformanceCounter();
-			float deltaTime = (currentTime - lastTime) / (float)SDL_GetPerformanceFrequency();
+			float frameTime = (currentTime - lastTime) / (float)SDL_GetPerformanceFrequency();
 			lastTime = currentTime;
+
+			if(frameTime > kMaxFrameTime)
+				frameTime = kMaxFrameTime;
 
 			SDL_Event event;
 			while(SDL_PollEvent(&event)){
@@ -104,13 +113,25 @@ namespace Monolith{
 			}
 
 			Input::Update();
-			TextureLib::Update(deltaTime);
 
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;
 
+			TextureLib::Update(frameTime);
+
 			if(m_layer)
-				m_layer->OnUpdate(deltaTime);
+				m_layer->OnUpdate(frameTime);
+
+			m_accumulator += frameTime;
+			m_lastStepCount = 0;
+			while(m_accumulator >= m_fixedTimestep){
+				if(m_layer)
+					m_layer->OnFixedUpdate(m_fixedTimestep);
+				m_accumulator -= m_fixedTimestep;
+				m_lastStepCount++;
+			}
+
+			float alpha = m_accumulator / m_fixedTimestep;
 			
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame();
@@ -125,7 +146,7 @@ namespace Monolith{
 			
 			Renderer::BeginScene(m_cam);
 			if(m_layer)
-				m_layer->OnRender();
+				m_layer->OnRender(alpha);
 			Renderer::EndScene();
 			
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

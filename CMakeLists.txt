@@ -80,6 +80,7 @@ add_library(MonolithCore SHARED
     engine/src/Input.cpp
     engine/src/Renderer.cpp
     engine/src/Systems.cpp
+    engine/src/Log.cpp
     engine/src/Camera2D.cpp
     engine/src/VAO.cpp
     engine/src/VBO.cpp

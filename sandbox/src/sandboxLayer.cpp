@@ -1,6 +1,7 @@
 #include "Camera2D.h"
 #include "Components.h"
 #include "Entity.h"
+#include "Player.h"
 #include "Systems.h"
 #include "TextureHandle.h"
 #include <sandboxLayer.h>
@@ -80,13 +81,16 @@ void sandboxLayer::OnAttach(){
 }
 
 void sandboxLayer::OnUpdate(float deltaTime){
-	PlayerSystem(m_registry);
-	Monolith::MovementSystem(m_registry, deltaTime);
 	m_cam.setPosition(m_registry.Get<Monolith::Transform>(m_player).position);
+}
+
+void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
+	PlayerSystem(m_registry);
+	Monolith::MovementSystem(m_registry, fixedDeltaTime);
 	m_registry.Flush();
 }
 
-void sandboxLayer::OnRender(){
+void sandboxLayer::OnRender(float alpha){
 	Monolith::RenderSystem(m_registry);
 }
 

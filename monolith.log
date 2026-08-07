@@ -1,0 +1,5 @@
+[Aug:20:25.927] [INFO] [ENGINE] Monolith starting up!
+[Aug:20:26.281] [INFO] [ENGINE] Uploaded texture: sandbox/assets/a.png (360x360, 3 channels)
+[Aug:20:26.281] [INFO] [ENGINE] Uploaded texture: sandbox/assets/b.png (16x16, 3 channels)
+[Aug:20:26.606] [INFO] [ENGINE] Uploaded texture: sandbox/assets/tileset.png (256x256, 4 channels)
+[Aug:20:53.843] [INFO] [ENGINE] Monolith shuttind down

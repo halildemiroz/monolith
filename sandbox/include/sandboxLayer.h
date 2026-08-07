@@ -17,7 +17,8 @@ class sandboxLayer : public Monolith::Layer{
 
 		void OnAttach() override;
 		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnFixedUpdate(float fixedDeltaTime) override;
+		void OnRender(float alpha) override;
 		void OnImGuiRender() override;
 	private:
 		Monolith::TextureHandle m_texture;

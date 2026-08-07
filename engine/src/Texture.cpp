@@ -1,6 +1,7 @@
 #include <Texture.h>
 #include <Image.h>
 #include <iostream>
+#include <Log.h>
 
 namespace Monolith{
 
@@ -29,7 +30,7 @@ namespace Monolith{
 		else if(channels == 3)
 			dataFormat = GL_RGB;
 		else{
-			std::cerr << "Unsupported channel count: " << channels << std::endl;
+			MONO_ERROR("Unsupported channel count: ", channels);
 			return;
 		}
 

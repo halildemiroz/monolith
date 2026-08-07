@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <memory>
 #include <Camera2D.h>
+#include <cstdint>
 
 namespace Monolith{
 
@@ -15,6 +16,10 @@ namespace Monolith{
 			void PushLayer(std::unique_ptr<Layer> layer);
 			void Run();
 
+			void SetFixedTimestep(float seconds) { m_fixedTimestep = seconds; }
+			float GetFixedTimestep() const { return m_fixedTimestep; }
+			uint32_t GetLastStepCount() const { return m_lastStepCount; }
+
 			Camera2D& GetCamera() { return m_cam; }
 
 		private:
@@ -24,5 +29,9 @@ namespace Monolith{
 
 			std::unique_ptr<Layer> m_layer;
 			Camera2D m_cam;
+
+			float m_fixedTimestep = 1.0f / 60.0f;
+			float m_accumulator = 0.0f;
+			uint32_t m_lastStepCount = 0;
 	};
 }

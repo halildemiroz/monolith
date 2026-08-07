@@ -1,4 +1,5 @@
 #include <Image.h>
+#include <Log.h>
 
 #define STBI_THREAD_LOCAL thread_local
 #define STB_IMAGE_IMPLEMENTATION
@@ -14,7 +15,7 @@ namespace Monolith{
 		ImageData image;
 		image.pixels = stbi_load(path.c_str(), &image.width, &image.height, &image.channels, 0);
 		if(!image.pixels)
-			std::cerr << "Failed to load image: " << path << " (" << stbi_failure_reason() << ")" << std::endl;
+			MONO_ERROR("Failed to load image: ", path, " (", stbi_failure_reason(), ")");
 		return image;
 	}
 

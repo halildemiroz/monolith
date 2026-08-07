@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+#include <Log.h>
 
 GLuint Monolith::Shader::compileStage(GLenum stage, const std::string& src){
 	GLuint id = glCreateShader(stage);
@@ -16,7 +17,7 @@ GLuint Monolith::Shader::compileStage(GLenum stage, const std::string& src){
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> log(len);
 		glGetShaderInfoLog(id, len, nullptr, log.data());
-		std::cerr << log.data() << std::endl;
+		MONO_ERROR("Shader compile failed: ", log.data());
 	}
 	return id;
 }
@@ -38,7 +39,7 @@ Monolith::Shader::Shader(const std::string &vertexSrc, const std::string &fragme
 		glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> log(len);
 		glGetProgramInfoLog(m_id, len, nullptr, log.data());
-		std::cerr << log.data() << std::endl;
+		MONO_ERROR("Shader link failed: ", log.data());
 	}
 	glDeleteShader(vs); 
 	glDeleteShader(fs);
