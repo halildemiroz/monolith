@@ -109,7 +109,7 @@ namespace Monolith{
 		glDrawArrays(mode, 0, count);
 	}
 
-	void Renderer::DrawSprite(TextureHandle texture, const glm::vec2& position, const glm::vec2& size, float rotation){
+	void Renderer::DrawSprite(TextureHandle texture, const glm::vec2& position, const glm::vec2& size, float rotation, const  glm::vec4& uvRect){
 		float texIndex = -1.0f;
 		for(uint32_t i = 0; i < s_textureSlotCount; ++i){
 			if(s_textureSlots[i] == texture){
@@ -146,8 +146,14 @@ namespace Monolith{
 				corner = rotated;
 			}
 		}
+		
+		glm::vec2 uvs[4] = {
+			{uvRect.x, uvRect.y},
+			{uvRect.z, uvRect.y},
+			{uvRect.z, uvRect.w},
+			{uvRect.x, uvRect.w}
+		};
 
-		glm::vec2 uvs[4] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
 		int order[6] = {0, 1, 2, 2, 3, 0};
 
 		for(int idx : order){

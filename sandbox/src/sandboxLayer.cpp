@@ -22,28 +22,47 @@ void sandboxLayer::OnAttach(){
 	Monolith::TextureLib::LoadAsync("sandbox/assets/a.png");
 
 	const int grid = 100;
-	const float spacing = 20.0f;
+	
+	m_tileset = Monolith::SpriteSheet(
+			Monolith::TextureLib::LoadAsync("sandbox/assets/tileset.png"), 16, 16
+			);
 
 	for(int y = 0; y < grid; ++y){
 		for(int x = 0; x < grid; ++x){
-			Monolith::Entity entity = m_registry.Create();
+			Monolith::Entity tile = m_registry.Create();
 
 			Monolith::Transform transform;
-			transform.position = { (x - grid / 2) * spacing, (y - grid / 2) * spacing };
-			m_registry.Add<Monolith::Transform>(entity, transform);
+			transform.position = { x * 16.0f, y * 16.0f };
+			m_registry.Add<Monolith::Transform>(tile, transform);
 
 			Monolith::Sprite sprite;
-			sprite.texture = m_texture;
+			sprite.texture = m_tileset.GetTexture();
 			sprite.size = { 16.0f, 16.0f };
-			m_registry.Add<Monolith::Sprite>(entity, sprite);
-
-			if((x+y) % 2 == 0){
-				Monolith::Velocity velocity;
-				velocity.value = { std::sin(float(x)) * 20.0f, std::cos(float(y)) * 20.0f };
-				m_registry.Add<Monolith::Velocity>(entity, velocity);
-			}
+			sprite.uvRect = m_tileset.GetUV(0);
+			m_registry.Add<Monolith::Sprite>(tile, sprite);
 		}
 	}
+
+	// for(int y = 0; y < grid; ++y){
+	// 	for(int x = 0; x < grid; ++x){
+	// 		Monolith::Entity entity = m_registry.Create();
+	//
+	// 		Monolith::Transform transform;
+	// 		transform.position = { (x - grid / 2) * spacing, (y - grid / 2) * spacing };
+	// 		m_registry.Add<Monolith::Transform>(entity, transform);
+	//
+	// 		Monolith::Sprite sprite;
+	// 		sprite.texture = m_texture;
+	// 		sprite.size = { 16.0f, 16.0f };
+	// 		m_registry.Add<Monolith::Sprite>(entity, sprite);
+	//
+	// 		if((x+y) % 2 == 0){
+	// 			Monolith::Velocity velocity;
+	// 			velocity.value = { std::sin(float(x)) * 20.0f, std::cos(float(y)) * 20.0f };
+	// 			m_registry.Add<Monolith::Velocity>(entity, velocity);
+	// 		}
+	// 	}
+	// }
 
 	m_player = m_registry.Create();
 

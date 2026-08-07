@@ -19,7 +19,8 @@ namespace Monolith{
 					Renderer::DrawSprite(sprite.texture,
 							transform.position,
 							sprite.size * transform.scale,
-							transform.rotation);
+							transform.rotation,
+							sprite.uvRect);
 				});
 	}
 

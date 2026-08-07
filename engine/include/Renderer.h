@@ -20,7 +20,10 @@ namespace Monolith{
 			static void EndScene();
 
 			static void Submit(Shader& shader, const VAO& vao, GLenum mode, GLsizei count);
-			static void DrawSprite(TextureHandle texture, const glm::vec2& position, const glm::vec2& size, float rotation = 0.0f);
+			static void DrawSprite(TextureHandle texture, 
+					const glm::vec2& position, 
+					const glm::vec2& size, float rotation = 0.0f,
+					const glm::vec4& uvRect = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 			static uint32_t GetDrawCallCount();
 			
