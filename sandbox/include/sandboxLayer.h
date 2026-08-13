@@ -1,4 +1,5 @@
 #pragma once
+#include "EventBus.h"
 #include <Camera2D.h>
 #include <TextureHandle.h>
 #include <Layer.h>
@@ -12,7 +13,7 @@ namespace Monolith{
 
 class sandboxLayer : public Monolith::Layer{
 	public:
-		explicit sandboxLayer(Monolith::Camera2D& cam);
+		explicit sandboxLayer(Monolith::Camera2D& cam, Monolith::EventBus& events);
 		~sandboxLayer() override;
 
 		void OnAttach() override;
@@ -24,6 +25,7 @@ class sandboxLayer : public Monolith::Layer{
 		Monolith::TextureHandle m_texture;
 		Monolith::TextureHandle m_playerTexture;
 		Monolith::Camera2D& m_cam;
+		Monolith::EventBus& m_events;
 		Monolith::Registry m_registry;
 		Monolith::Entity m_player;
 		Monolith::SpriteSheet m_tileset;

@@ -1,11 +1,13 @@
 #include "Camera2D.h"
 #include "Components.h"
 #include "Entity.h"
+#include "EventBus.h"
 #include "Player.h"
 #include "Systems.h"
 #include "TextureHandle.h"
 #include <sandboxLayer.h>
-
+#include <Events.h>
+#include <Log.h>
 #include <cmath>
 
 #include <Renderer.h>
@@ -13,7 +15,7 @@
 #include <Texture.h>
 #include <imgui.h>
 
-sandboxLayer::sandboxLayer(Monolith::Camera2D& cam) : m_cam(cam){}
+sandboxLayer::sandboxLayer(Monolith::Camera2D& cam, Monolith::EventBus& events) : m_cam(cam), m_events(events){}
 sandboxLayer::~sandboxLayer() = default;
 
 void sandboxLayer::OnAttach(){
@@ -78,6 +80,12 @@ void sandboxLayer::OnAttach(){
 
 	m_registry.Add<Monolith::Velocity>(m_player);
 	m_registry.Add<Player>(m_player, Player{300.0f});
+
+	m_events.Subscribe<Monolith::WindowResizeEvent>(
+			[](const Monolith::WindowResizeEvent& e){
+			APP_INFO("Window resized: ", e.width, "x", e.height);
+			}
+			);
 }
 
 void sandboxLayer::OnUpdate(float deltaTime){

@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <memory>
 #include <Camera2D.h>
+#include <EventBus.h>
 #include <cstdint>
 
 namespace Monolith{
@@ -21,6 +22,7 @@ namespace Monolith{
 			uint32_t GetLastStepCount() const { return m_lastStepCount; }
 
 			Camera2D& GetCamera() { return m_cam; }
+			EventBus& GetEvents() { return m_events; }
 
 		private:
 			SDL_Window* m_window;
@@ -29,6 +31,7 @@ namespace Monolith{
 
 			std::unique_ptr<Layer> m_layer;
 			Camera2D m_cam;
+			EventBus m_events;
 
 			float m_fixedTimestep = 1.0f / 60.0f;
 			float m_accumulator = 0.0f;

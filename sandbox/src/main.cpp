@@ -4,7 +4,7 @@
 int main(){
 	Monolith::App app;
 	
-	app.PushLayer(std::make_unique<sandboxLayer>(app.GetCamera()));
+	app.PushLayer(std::make_unique<sandboxLayer>(app.GetCamera(), app.GetEvents()));
 	app.Run();
 
 	return 0;

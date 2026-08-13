@@ -1,3 +1,4 @@
+#include "SDL_video.h"
 #include <App.h>
 #include <SDL.h>
 #include <Input.h>
@@ -7,7 +8,7 @@
 #include <Layer.h>
 #include <TextureLib.h>
 #include <Log.h>
-
+#include <Events.h>
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
@@ -33,7 +34,7 @@ namespace Monolith{
 		m_window = SDL_CreateWindow("Monolith Engine", 
 				SDL_WINDOWPOS_CENTERED, 
 				SDL_WINDOWPOS_CENTERED, 
-				1280, 720, SDL_WINDOW_OPENGL);
+				1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 		if(!m_window){
 			MONO_ERROR("Failed to create window: ", SDL_GetError());
 			m_isRunning = false;
@@ -108,11 +109,25 @@ namespace Monolith{
 			SDL_Event event;
 			while(SDL_PollEvent(&event)){
 				ImGui_ImplSDL2_ProcessEvent(&event);
-				if(event.type == SDL_QUIT)
+				if(event.type == SDL_QUIT){
+					m_events.Queue(WindowCloseEvent{});
 					m_isRunning = false;
-			}
+				}
 
+				if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
+					int width = event.window.data1;
+					int height = event.window.data2;
+
+					glViewport(0,0,width,height);
+					m_cam.setViewportSize(static_cast<float>(width), static_cast<float>(height));
+
+					m_events.Queue(WindowResizeEvent{width,height});
+				}
+			}
+			
 			Input::Update();
+
+			m_events.DispatchQueued();
 
 			if(Input::isKeyPressed(Key::Escape))
 				m_isRunning = false;
