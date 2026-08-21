@@ -6,6 +6,6 @@ namespace Monolith {
 	class Registery;
 
 	void MovementSystem(Registry& registry, float deltaTime);
-	void RenderSystem(Registry& registry);
+	void RenderSystem(Registry& registry, float alpha);
 
 }

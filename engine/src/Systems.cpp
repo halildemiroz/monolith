@@ -9,15 +9,16 @@ namespace Monolith{
 	void MovementSystem(Registry &registry, float deltaTime){
 		registry.Each<Transform, Velocity>(
 				[deltaTime](Entity, Transform& transform, Velocity& velocity){
+					transform.prevPosition = transform.position;
 					transform.position += velocity.value * deltaTime;
 				});
 	}
 
-	void RenderSystem(Registry &registry){
+	void RenderSystem(Registry &registry, float alpha){
 		registry.Each<Transform, Sprite>(
-				[](Entity, Transform& transform, Sprite& sprite){
+				[alpha](Entity, Transform& transform, Sprite& sprite){
 					Renderer::DrawSprite(sprite.texture,
-							transform.position,
+							glm::mix(transform.prevPosition, transform.position, alpha),
 							sprite.size * transform.scale,
 							transform.rotation,
 							sprite.uvRect);

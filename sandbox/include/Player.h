@@ -5,7 +5,7 @@
 namespace Monolith { class Registry; }
 
 struct Player{
-	float speed = 200.0f;
+	float speed;
 };
 
 void PlayerSystem(Monolith::Registry& Registry);

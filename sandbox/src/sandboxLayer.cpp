@@ -36,6 +36,7 @@ void sandboxLayer::OnAttach(){
 
 			Monolith::Transform transform;
 			transform.position = { x * 16.0f, y * 16.0f };
+			transform.prevPosition = { x * 16.0f, y * 16.0f };
 			m_registry.Add<Monolith::Transform>(tile, transform);
 
 			Monolith::Sprite sprite;
@@ -70,6 +71,7 @@ void sandboxLayer::OnAttach(){
 	m_player = m_registry.Create();
 
 	Monolith::Transform playerTransform;
+	playerTransform.prevPosition = { 0.0f, 0.0f };
 	playerTransform.position = { 0.0f, 0.0f };
 	m_registry.Add<Monolith::Transform>(m_player, playerTransform);
 
@@ -89,7 +91,6 @@ void sandboxLayer::OnAttach(){
 }
 
 void sandboxLayer::OnUpdate(float deltaTime){
-	m_cam.setPosition(m_registry.Get<Monolith::Transform>(m_player).position);
 }
 
 void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
@@ -99,7 +100,9 @@ void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
 }
 
 void sandboxLayer::OnRender(float alpha){
-	Monolith::RenderSystem(m_registry);
+	auto& t = m_registry.Get<Monolith::Transform>(m_player);
+	m_cam.setPosition(glm::mix(t.prevPosition, t.position, alpha));
+	Monolith::RenderSystem(m_registry, alpha);
 }
 
 void sandboxLayer::OnImGuiRender(){

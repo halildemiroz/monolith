@@ -48,7 +48,7 @@ namespace Monolith {
 			localtime_r(&time, &tm);
 
 			std::ostringstream out;
-			out << std::put_time(&tm, "%h:%M:%S") << '.' << std::setfill('0') <<std::setw(3) << ms.count();
+			out << std::put_time(&tm, "%H:%M:%S") << '.' << std::setfill('0') <<std::setw(3) << ms.count();
 			return out.str();
 		}
 

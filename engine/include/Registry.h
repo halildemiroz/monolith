@@ -115,7 +115,7 @@ namespace Monolith{
 				ComponentPool<T>& Pool(){
 					std::type_index type(typeid(T));
 					auto it = m_pools.find(type);
-					if(it == m_pools.find(type))
+					if(it == m_pools.end())
 						it = m_pools.emplace(type, std::make_unique<ComponentPool<T>>()).first;
 					return *static_cast<ComponentPool<T>*>(it->second.get());
 				}
