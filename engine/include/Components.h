@@ -22,4 +22,10 @@ namespace Monolith{
 		glm::vec2 value{0.0f, 0.0f};
 	};
 
+	struct BoxCollider{
+		glm::vec2 size{1.0f, 1.0f};
+		glm::vec2 offset{0.0f, 0.0f};
+	};
+
+
 }

@@ -88,6 +88,7 @@ add_library(MonolithCore SHARED
     engine/src/Texture.cpp
     engine/src/TextureLib.cpp
     engine/vendor/glad/src/glad.c
+    engine/src/SpatialGrid.cpp
 )
 
 target_include_directories(MonolithCore PUBLIC engine/include)

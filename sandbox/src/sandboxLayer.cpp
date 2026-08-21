@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "EventBus.h"
 #include "Player.h"
+#include "SparseSet.h"
 #include "Systems.h"
 #include "TextureHandle.h"
 #include <sandboxLayer.h>
@@ -29,47 +30,20 @@ void sandboxLayer::OnAttach(){
 	m_tileset = Monolith::SpriteSheet(
 			Monolith::TextureLib::LoadAsync("sandbox/assets/tileset.png"), 16, 16
 			);
+	
+	Monolith::Entity tile = m_registry.Create();
+	Monolith::Transform transform;
+	transform.position = {50,50};
+	transform.prevPosition = transform.position;
+	m_registry.Add<Monolith::Transform>(tile, transform);
 
-	for(int y = 0; y < grid; ++y){
-		for(int x = 0; x < grid; ++x){
-			Monolith::Entity tile = m_registry.Create();
-
-			Monolith::Transform transform;
-			transform.position = { x * 16.0f, y * 16.0f };
-			transform.prevPosition = { x * 16.0f, y * 16.0f };
-			m_registry.Add<Monolith::Transform>(tile, transform);
-
-			Monolith::Sprite sprite;
-			sprite.texture = m_tileset.GetTexture();
-			sprite.size = { 16.0f, 16.0f };
-			sprite.uvRect = m_tileset.GetUV(0);
-			m_registry.Add<Monolith::Sprite>(tile, sprite);
-		}
-	}
-
-	// for(int y = 0; y < grid; ++y){
-	// 	for(int x = 0; x < grid; ++x){
-	// 		Monolith::Entity entity = m_registry.Create();
-	//
-	// 		Monolith::Transform transform;
-	// 		transform.position = { (x - grid / 2) * spacing, (y - grid / 2) * spacing };
-	// 		m_registry.Add<Monolith::Transform>(entity, transform);
-	//
-	// 		Monolith::Sprite sprite;
-	// 		sprite.texture = m_texture;
-	// 		sprite.size = { 16.0f, 16.0f };
-	// 		m_registry.Add<Monolith::Sprite>(entity, sprite);
-	//
-	// 		if((x+y) % 2 == 0){
-	// 			Monolith::Velocity velocity;
-	// 			velocity.value = { std::sin(float(x)) * 20.0f, std::cos(float(y)) * 20.0f };
-	// 			m_registry.Add<Monolith::Velocity>(entity, velocity);
-	// 		}
-	// 	}
-	// }
+	Monolith::Sprite sprite;
+	sprite.texture = m_tileset.GetTexture();
+	sprite.size = {64.0f, 64.0f};
+	sprite.uvRect = m_tileset.GetUV(0);
+	m_registry.Add<Monolith::Sprite>(tile, sprite);
 
 	m_player = m_registry.Create();
-
 	Monolith::Transform playerTransform;
 	playerTransform.prevPosition = { 0.0f, 0.0f };
 	playerTransform.position = { 0.0f, 0.0f };
@@ -82,6 +56,10 @@ void sandboxLayer::OnAttach(){
 
 	m_registry.Add<Monolith::Velocity>(m_player);
 	m_registry.Add<Player>(m_player, Player{300.0f});
+	m_registry.Add<Monolith::BoxCollider>(m_player, Monolith::BoxCollider{
+			.size = {64.0f, 64.0f},
+			.offset = {0.0f, 0.0f}
+			});
 
 	m_events.Subscribe<Monolith::WindowResizeEvent>(
 			[](const Monolith::WindowResizeEvent& e){
@@ -103,8 +81,16 @@ void sandboxLayer::OnRender(float alpha){
 	auto& t = m_registry.Get<Monolith::Transform>(m_player);
 	glm::vec2 interpolated = glm::mix(t.prevPosition, t.position, alpha);
 	m_cam.setPosition(interpolated);
-	Monolith::Renderer::DrawRect(interpolated, {64, 64}, {1,0,0,1});
+
 	Monolith::RenderSystem(m_registry, alpha);
+
+	m_registry.Each<Monolith::Transform, Monolith::BoxCollider>(
+			[alpha](Monolith::Entity entity, Monolith::Transform& t, Monolith::BoxCollider& col){
+			glm::vec2 pos = glm::mix(t.prevPosition, t.position, alpha);
+			glm::vec2 rectMin = pos;
+			Monolith::Renderer::DrawRect(rectMin, col.size, {0.0f, 1.0f, 0.0f, 1.0f});
+			}
+			);
 }
 
 void sandboxLayer::OnImGuiRender(){
