@@ -101,7 +101,9 @@ void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
 
 void sandboxLayer::OnRender(float alpha){
 	auto& t = m_registry.Get<Monolith::Transform>(m_player);
-	m_cam.setPosition(glm::mix(t.prevPosition, t.position, alpha));
+	glm::vec2 interpolated = glm::mix(t.prevPosition, t.position, alpha);
+	m_cam.setPosition(interpolated);
+	Monolith::Renderer::DrawRect(interpolated, {64, 64}, {1,0,0,1});
 	Monolith::RenderSystem(m_registry, alpha);
 }
 

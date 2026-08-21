@@ -1,5 +1,5 @@
-[14:25:09.932] [INFO] [ENGINE] Monolith starting up!
-[14:25:10.211] [INFO] [ENGINE] Uploaded texture: sandbox/assets/a.png (360x360, 3 channels)
-[14:25:10.211] [INFO] [ENGINE] Uploaded texture: sandbox/assets/b.png (16x16, 3 channels)
-[14:25:10.535] [INFO] [ENGINE] Uploaded texture: sandbox/assets/tileset.png (256x256, 4 channels)
-[14:25:14.247] [INFO] [ENGINE] Monolith shutting down
+[15:33:55.603] [INFO] [ENGINE] Monolith starting up!
+[15:33:55.894] [INFO] [ENGINE] Uploaded texture: sandbox/assets/a.png (360x360, 3 channels)
+[15:33:55.894] [INFO] [ENGINE] Uploaded texture: sandbox/assets/b.png (16x16, 3 channels)
+[15:33:56.221] [INFO] [ENGINE] Uploaded texture: sandbox/assets/tileset.png (256x256, 4 channels)
+[15:33:56.898] [INFO] [ENGINE] Monolith shutting down

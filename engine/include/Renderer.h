@@ -26,6 +26,8 @@ namespace Monolith{
 					const glm::vec4& uvRect = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 			static uint32_t GetDrawCallCount();
+			static void DrawLine(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
+			static void DrawRect(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 			
 		private:
 			static void Flush();
