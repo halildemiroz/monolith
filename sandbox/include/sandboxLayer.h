@@ -6,6 +6,7 @@
 #include <ECS.h>
 #include <Player.h>
 #include <SpriteSheet.h>
+#include <CollisionSystem.h>
 
 namespace Monolith{
 	class Camera2D;
@@ -29,4 +30,5 @@ class sandboxLayer : public Monolith::Layer{
 		Monolith::Registry m_registry;
 		Monolith::Entity m_player;
 		Monolith::SpriteSheet m_tileset;
+		Monolith::CollisionSystem m_colsys;
 };

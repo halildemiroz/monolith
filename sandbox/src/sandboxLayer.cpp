@@ -10,6 +10,7 @@
 #include <Events.h>
 #include <Log.h>
 #include <cmath>
+#include <CollisionSystem.h>
 
 #include <Renderer.h>
 #include <TextureLib.h>
@@ -43,6 +44,11 @@ void sandboxLayer::OnAttach(){
 	sprite.uvRect = m_tileset.GetUV(0);
 	m_registry.Add<Monolith::Sprite>(tile, sprite);
 
+	m_registry.Add<Monolith::BoxCollider>(tile, Monolith::BoxCollider{
+			.size = {64.0f, 64.0f},
+			.offset = {0.0f, 0.0f}
+			});
+
 	m_player = m_registry.Create();
 	Monolith::Transform playerTransform;
 	playerTransform.prevPosition = { 0.0f, 0.0f };
@@ -61,6 +67,7 @@ void sandboxLayer::OnAttach(){
 			.offset = {0.0f, 0.0f}
 			});
 
+	
 	m_events.Subscribe<Monolith::WindowResizeEvent>(
 			[](const Monolith::WindowResizeEvent& e){
 			APP_INFO("Window resized: ", e.width, "x", e.height);
@@ -74,6 +81,11 @@ void sandboxLayer::OnUpdate(float deltaTime){
 void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
 	PlayerSystem(m_registry);
 	Monolith::MovementSystem(m_registry, fixedDeltaTime);
+
+	auto collisions = m_colsys.Update(m_registry);
+	for(const auto& pair : collisions)
+		APP_INFO("Collision detected between entity ", pair.a.index, " and ", pair.b.index);
+
 	m_registry.Flush();
 }
 
@@ -87,7 +99,7 @@ void sandboxLayer::OnRender(float alpha){
 	m_registry.Each<Monolith::Transform, Monolith::BoxCollider>(
 			[alpha](Monolith::Entity entity, Monolith::Transform& t, Monolith::BoxCollider& col){
 			glm::vec2 pos = glm::mix(t.prevPosition, t.position, alpha);
-			glm::vec2 rectMin = pos;
+			glm::vec2 rectMin = pos + col.offset * (col.size * 0.5f);
 			Monolith::Renderer::DrawRect(rectMin, col.size, {0.0f, 1.0f, 0.0f, 1.0f});
 			}
 			);
