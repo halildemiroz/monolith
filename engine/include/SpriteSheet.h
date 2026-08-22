@@ -9,7 +9,7 @@ namespace Monolith{
 			SpriteSheet() = default;
 			SpriteSheet(TextureHandle texture, int columns, int rows) : m_texture(texture), m_columns(columns), m_rows(rows){}
 
-			glm::vec4 GetUV(int id) const {
+			Vec4 GetUV(int id) const {
 				if(m_columns <= 0 || m_rows <= 0 || id < 0 || id >= GetTileCount())
 					return { 0.0f, 0.0f, 1.0f, 1.0f };
 
@@ -25,7 +25,7 @@ namespace Monolith{
 				return { u0, v1 - h, u0 + w, v1 };
 			}
 
-			glm::vec4 GetUV(int col, int row) const {
+			Vec4 GetUV(int col, int row) const {
 				return GetUV(row * m_columns + col);
 			}
 

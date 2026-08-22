@@ -1,8 +1,7 @@
 #pragma once
-#include "Input.h"
 #include <unordered_map>
 #include <Entity.h>
-#include <glm/glm.hpp>
+#include <MMath.h>
 #include <vector>
 
 namespace Monolith{
@@ -12,8 +11,8 @@ namespace Monolith{
 			SpatialGrid(float cellSize = 64.0f);
 		
 			void Clear();
-			void Insert(Entity e, const glm::vec2& center, const glm::vec2& size);
-			std::vector<Entity> Query(const glm::vec2& center, const glm::vec2& size, Entity ignoreEntity);
+			void Insert(Entity e, const Vec2& center, const Vec2& size);
+			std::vector<Entity> Query(const Vec2& center, const Vec2& size, Entity ignoreEntity);
 			
 		private:
 			float m_cellSize;

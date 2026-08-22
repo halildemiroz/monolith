@@ -159,7 +159,7 @@ namespace Monolith{
 
 			ImGui::Render();
 			
-			Renderer::Clear(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
+			Renderer::Clear(Color(0.1f, 0.2f, 0.1f, 1.0f));
 			
 			Renderer::BeginScene(m_cam);
 			if(m_layer)

@@ -18,7 +18,7 @@ namespace Monolith{
 		registry.Each<Transform, Sprite>(
 				[alpha](Entity, Transform& transform, Sprite& sprite){
 					Renderer::DrawSprite(sprite.texture,
-							glm::mix(transform.prevPosition, transform.position, alpha),
+							Lerp(transform.prevPosition, transform.position, alpha),
 							sprite.size * transform.scale,
 							transform.rotation,
 							sprite.uvRect);

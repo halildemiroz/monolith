@@ -8,7 +8,7 @@ namespace Monolith {
 			Recalculate();
 		}
 	
-	void Camera2D::setPosition(const glm::vec2& position){
+	void Camera2D::setPosition(const Vec2& position){
 		m_position = position;
 		Recalculate();
 	}
@@ -29,7 +29,7 @@ namespace Monolith {
       float halfH = (m_height * 0.5f) / m_zoom;
 
       glm::mat4 projection = glm::ortho(-halfW, halfW, -halfH, halfH, -1.0f, 1.0f);
-      glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-m_position, 0.0f));
+      glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-m_position.x, -m_position.y, 0.0f));
 
       m_viewProjection = projection * view;
   }

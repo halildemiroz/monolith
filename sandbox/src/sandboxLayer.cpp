@@ -34,7 +34,7 @@ void sandboxLayer::OnAttach(){
 	
 	Monolith::Entity tile = m_registry.Create();
 	Monolith::Transform transform;
-	transform.position = {50,50};
+	transform.position = {200,200};
 	transform.prevPosition = transform.position;
 	m_registry.Add<Monolith::Transform>(tile, transform);
 
@@ -73,6 +73,14 @@ void sandboxLayer::OnAttach(){
 			APP_INFO("Window resized: ", e.width, "x", e.height);
 			}
 			);
+	
+	m_events.Subscribe<Monolith::CollisionEvent>(
+			[this](const Monolith::CollisionEvent& e){
+			if(e.a == m_player) m_registry.Destroy(e.b);
+			else if(e.b == m_player) m_registry.Destroy(e.a);
+			}
+			);
+
 }
 
 void sandboxLayer::OnUpdate(float deltaTime){
@@ -82,7 +90,7 @@ void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
 	PlayerSystem(m_registry);
 	Monolith::MovementSystem(m_registry, fixedDeltaTime);
 
-	auto collisions = m_colsys.Update(m_registry);
+	auto collisions = m_colsys.Update(m_registry, m_events);
 	for(const auto& pair : collisions)
 		APP_INFO("Collision detected between entity ", pair.a.index, " and ", pair.b.index);
 
@@ -91,16 +99,16 @@ void sandboxLayer::OnFixedUpdate(float fixedDeltaTime){
 
 void sandboxLayer::OnRender(float alpha){
 	auto& t = m_registry.Get<Monolith::Transform>(m_player);
-	glm::vec2 interpolated = glm::mix(t.prevPosition, t.position, alpha);
+	Monolith::Vec2 interpolated = Monolith::Lerp(t.prevPosition, t.position, alpha);
 	m_cam.setPosition(interpolated);
 
 	Monolith::RenderSystem(m_registry, alpha);
 
 	m_registry.Each<Monolith::Transform, Monolith::BoxCollider>(
 			[alpha](Monolith::Entity entity, Monolith::Transform& t, Monolith::BoxCollider& col){
-			glm::vec2 pos = glm::mix(t.prevPosition, t.position, alpha);
-			glm::vec2 rectMin = pos + col.offset * (col.size * 0.5f);
-			Monolith::Renderer::DrawRect(rectMin, col.size, {0.0f, 1.0f, 0.0f, 1.0f});
+			Monolith::Vec2 pos = Monolith::Lerp(t.prevPosition, t.position, alpha);
+			Monolith::Vec2 rectMin = (pos + col.offset) - (col.size * 0.5f);
+			Monolith::Renderer::DrawRect(rectMin, col.size, Monolith::Color::Green);
 			}
 			);
 }

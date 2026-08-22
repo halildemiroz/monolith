@@ -10,9 +10,9 @@ namespace Monolith{
 		m_cells.clear();
 	}
 
-	void SpatialGrid::Insert(Entity e, const glm::vec2& center, const glm::vec2& size){
-		glm::vec2 min = center - (size * 0.5f);
-		glm::vec2 max = center + (size * 0.5f);
+	void SpatialGrid::Insert(Entity e, const Vec2& center, const Vec2& size){
+		Vec2 min = center - (size * 0.5f);
+		Vec2 max = center + (size * 0.5f);
 		int32_t minCellX = WorldToCell(min.x);
 		int32_t minCellY = WorldToCell(min.y);
 		int32_t maxCellX = WorldToCell(max.x);
@@ -25,10 +25,10 @@ namespace Monolith{
 		}	
 	}
 
-	std::vector<Entity> SpatialGrid::Query(const glm::vec2& center, const glm::vec2& size, Entity ignoreEntity){
+	std::vector<Entity> SpatialGrid::Query(const Vec2& center, const Vec2& size, Entity ignoreEntity){
 
-		glm::vec2 min = center - (size * 0.5f);
-		glm::vec2 max = center + (size * 0.5f);
+		Vec2 min = center - (size * 0.5f);
+		Vec2 max = center + (size * 0.5f);
 		int32_t minCellX = WorldToCell(min.x);
 		int32_t minCellY = WorldToCell(min.y);
 		int32_t maxCellX = WorldToCell(max.x);

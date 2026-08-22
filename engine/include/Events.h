@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entity.h"
 namespace Monolith {
 	
 	struct WindowResizeEvent{
@@ -7,6 +8,10 @@ namespace Monolith {
 		int height = 0;
 	};
 
-	struct WindowCloseEvent{};
+	struct CollisionEvent{
+		Entity a, b;
+	};
 
+	struct WindowCloseEvent{};
+	
 }

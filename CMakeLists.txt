@@ -109,3 +109,11 @@ add_executable(MonolithSandbox
 target_include_directories(MonolithSandbox PUBLIC sandbox/include)
 target_link_libraries(MonolithSandbox PRIVATE MonolithCore)
 
+add_executable(MonolithSnake
+    sandbox/snake/src/snake_main.cpp
+    sandbox/snake/src/SnakeGame.cpp
+)
+
+target_include_directories(MonolithSnake PUBLIC sandbox/snake/include)
+target_link_libraries(MonolithSnake PRIVATE MonolithCore)
+

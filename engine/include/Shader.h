@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <string>
 #include <glm/glm.hpp>
+#include <MMath.h>
 
 namespace Monolith{
 	
@@ -13,7 +14,7 @@ namespace Monolith{
 			void Bind();
 			void Unbind();
 			void setMat4(const std::string& name, const glm::mat4& value);
-			void setVec4(const std::string& name, const glm::vec4& value);
+			void setVec4(const std::string& name, const Vec4& value);
 			void setInt(const std::string& name, int value);
 			void setIntArray(const std::string& name, const int* values, uint32_t count);
 
